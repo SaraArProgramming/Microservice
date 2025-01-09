@@ -5,21 +5,13 @@ pipeline {
         stage("Login to EKS") {
             steps {
                 script {
-                    // Authenticate with AWS using your LabRole credentials
-                    withCredentials([
-                        string(credentialsId: 'access-key', variable: 'AWS_ACCESS_KEY'),
-                        string(credentialsId: 'secret-key', variable: 'AWS_SECRET_KEY')
-                    ]) {
-                        // Update kubeconfig to access the EKS cluster
-                        sh """
-                            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-                            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-                            aws sts get-caller-identity
-                            aws eks --region us-east-1 update-kubeconfig --name EKS-1
-                        """
-                        
-
-                    }
+                    // Directly set AWS credentials (not recommended)
+                    sh """
+                        export AWS_ACCESS_KEY_ID=ASIATXPNSVPQ4YMYASLU
+                        export AWS_SECRET_ACCESS_KEY=FWiGpbmM5+TMO/Xn60m4rIi+iSsbxhWj21rcvESo
+                        aws sts get-caller-identity
+                        aws eks --region us-east-1 update-kubeconfig --name EKS-1
+                    """
                 }
             }
         }
@@ -31,7 +23,7 @@ pipeline {
                     sh """
                         kubectl apply -f deployment-service.yml
                     """
-                  sleep 60
+                    sleep 60
                 }
             }
         }
@@ -45,7 +37,7 @@ pipeline {
                     """
 
                     // Extract the LoadBalancer URL
-                  sh """
+                    sh """
                         echo "LoadBalancer URL for frontend-external:"
                         kubectl get svc frontend-external -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
                         echo ""
