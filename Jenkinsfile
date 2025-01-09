@@ -5,18 +5,10 @@ pipeline {
         stage("Login to EKS") {
             steps {
                 script {
-                    // Authenticate with AWS using Jenkins credentials
-                    withCredentials([
-                        string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY'),
-                        string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_KEY')
-                    ]) {
-                        // Update kubeconfig to access the EKS cluster
-                        sh '''
-                            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-                            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-                            aws eks --region us-east-1 update-kubeconfig --name EKS-1
-                            aws sts get-caller-identity
-                        '''
+                    withCredentials([string(credentialsId: 'access-key', variable: 'AWS_ACCESS_KEY'),
+                                     string(credentialsId: 'secret-key', variable: 'AWS_SECRET_KEY'),
+                                     string(credentialsId: 'session-token', variable: 'AWS_SESSION_TOKEN')]) {
+                        sh "aws eks --region us-east-1 update-kubeconfig --name EKS-1"
                     }
                 }
             }
