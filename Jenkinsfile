@@ -14,8 +14,8 @@ pipeline {
                         sh '''
                             export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
                             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-                            aws sts get-caller-identity
                             aws eks --region us-east-1 update-kubeconfig --name EKS-1
+                            aws sts get-caller-identity
                         '''
                     }
                 }
